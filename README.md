@@ -1,0 +1,1 @@
+# Windows-history-and-activity-cleanup-script
