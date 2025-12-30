@@ -1,6 +1,6 @@
-# ======================================
-# SCRIPT DI PULIZIA PROFONDA WINDOWS 11 
-# ======================================
+# ==========================
+# SCRIPT DI PULIZIA WINDOWS 
+# ==========================
 
 # --- 1. Verifica Privilegi Amministratore ---
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -38,46 +38,42 @@ Stop-Service -Name "WSearch" -Force -ErrorAction SilentlyContinue
 Write-Host "[*] Attesa rilascio file (4 secondi)..." -ForegroundColor Gray
 Start-Sleep -Seconds 4
 
-# --- 3. Browser Chromium (Chrome, Edge, Brave) ---
-Write-Host "[*] Pulizia Browser Chromium (Sessioni, LocalStorage, IndexedDB)..." -ForegroundColor Yellow
-$ChromiumBrowsers = @{
-    "Google Chrome"  = "$env:LOCALAPPDATA\Google\Chrome\User Data"
-    "Microsoft Edge" = "$env:LOCALAPPDATA\Microsoft\Edge\User Data"
-    "Brave Browser"  = "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data"
-}
+# --- 3. Browser Chromium (Chrome, Edge, Brave) Corretto ---
+$ChromiumPaths = @(
+    "$env:LOCALAPPDATA\Google\Chrome\User Data",
+    "$env:LOCALAPPDATA\Microsoft\Edge\User Data",
+    "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data"
+)
 
-foreach ($browser in $ChromiumBrowsers.Keys) {
-    $rootPath = $ChromiumBrowsers[$browser]
-    if (Test-Path $rootPath) {
-        # Identifica tutti i profili (Default e Profile X)
-        $Profiles = Get-ChildItem -Path $rootPath -Directory | Where-Object { $_.Name -eq "Default" -or $_.Name -like "Profile *" }
+foreach ($BasePath in $ChromiumPaths) {
+    if (Test-Path $BasePath) {
+        Write-Host "[*] Pulizia in corso per: $BasePath" -ForegroundColor Gray
+        # Trova tutte le cartelle profilo
+        $ProfileFolders = Get-ChildItem -Path $BasePath -Directory | Where-Object { $_.Name -match "Default|Profile" }
         
-        foreach ($profile in $Profiles) {
-            $pPath = $profile.FullName
+        foreach ($PDir in $ProfileFolders) {
+            $pPath = $PDir.FullName
             
-            # FILE  (Includono file di login e cronologia)
-            $FilesToRemove = @(
-                "History", "Cookies", "Web Data", "Login Data", "Top Sites", 
-                "Visited Links", "Last Tabs", "Last Session", 
-                "Current Tabs", "Current Session", "Shortcuts", "Network Action Predictor",
-                "QuotaManager"
+            # File specifici per le sessioni
+            $Items = @(
+                "$pPath\Network\Cookies",
+                "$pPath\Network\Cookies-journal",
+                "$pPath\Network\Network Persistent State",
+                "$pPath\Cookies",
+                "$pPath\Login Data",
+                "$pPath\Web Data",
+                "$pPath\Sessions",
+                "$pPath\Session Storage",
+                "$pPath\Local Storage",
+                "$pPath\IndexedDB",
+                "$pPath\Extension State"
             )
-            
-            # CARTELLE  
-            $FoldersToRemove = @(
-                "Sessions", 
-                "Session Storage", 
-                "Local Storage",   
-                "IndexedDB",       
-                "Service Worker",  
-                "Cache", 
-                "Code Cache", 
-                "GPUCache",
-                "Extension State"
-            )
-            
-            foreach ($f in $FilesToRemove) { Remove-AndLog -Path "$pPath\$f" }
-            foreach ($folder in $FoldersToRemove) { Remove-AndLog -Path "$pPath\$folder" -Recurse }
+
+            foreach ($item in $Items) {
+                if (Test-Path $item) {
+                    Remove-AndLog -Path $item -Recurse
+                }
+            }
         }
     }
 }
