@@ -40,7 +40,7 @@ Questo script PowerShell è utile per la manutenzione e la pulizia di Windows 11
 | Area | Elementi Coinvolti |
 | :--- | :--- |
 | **Browser** | Chrome, Edge, Brave, Firefox (History, Sessions, Cache, Cookies) |
-| **Windows** | Prefetch, Temp, Cestino, DNS Cache, RunMRU |
+| **Windows** | Downloads utente, Prefetch, Temp, Cestino, DNS Cache, RunMRU |
 | **Search** | Recent Searches, Index Rebuild |
 | **Logs** | Tutti i Windows Event Logs (System, Security, Application, ecc.) |
 | **Terminal** | PowerShell History (ConsoleHost_history.txt) |
