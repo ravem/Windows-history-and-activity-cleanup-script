@@ -45,7 +45,3 @@ Questo script PowerShell è utile per la manutenzione e la pulizia di Windows 11
 | **Logs** | Tutti i Windows Event Logs (System, Security, Application, ecc.) |
 | **Terminal** | PowerShell History (ConsoleHost_history.txt) |
 
-
-
-##  Licenza
-Distribuito sotto Licenza MIT. Scaricando e utilizzando questo script, accetti che l'autore non è responsabile per eventuali perdite di dati non intenzionali.
