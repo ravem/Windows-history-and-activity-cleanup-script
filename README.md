@@ -32,7 +32,7 @@ Questo script PowerShell è utile per la manutenzione e la pulizia di Windows 11
 1.  Apri il Terminale (come amministratore) e digita:
     ```powershell
     Set-ExecutionPolicy Bypass -Scope Process -Force
-    .\NomeDelloScript.ps1
+    .\cleanup.ps1
     ```
 
 ##  Dettaglio elementi eliminati
