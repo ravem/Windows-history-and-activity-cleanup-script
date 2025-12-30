@@ -1,6 +1,6 @@
-# ==========================
-# SCRIPT DI PULIZIA WINDOWS 
-# ==========================
+# ======================================
+# SCRIPT DI PULIZIA PROFONDA WINDOWS 11 
+# ======================================
 
 # --- 1. Verifica Privilegi Amministratore ---
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -124,6 +124,10 @@ foreach ($tp in $TempPaths) {
 Get-WinEvent -ListLog * -ErrorAction SilentlyContinue | ForEach-Object {
     try { [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession.ClearLog($_.LogName) } catch {}
 }
+
+#Svuotamento cartella downloads
+Remove-Item -Path "$env:USERPROFILE\Downloads\*" -Recurse -Force
+
 
 # --- 7. Ripristino ---
 Write-Host "[*] Ripristino ambiente..." -ForegroundColor Yellow
